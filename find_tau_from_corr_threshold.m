@@ -6,7 +6,7 @@ function tau = find_tau_from_corr_threshold(x, m, corr_type, threshold)
     end
 
     N = length(x);
-    max_lag = round(0.3 * N); % limit search to 30% of series length
+    max_lag = round(0.2 * N); % limit lag search to 20% of series length
 
     if strcmpi(corr_type, 'ACF')
         mid     = length(x);
@@ -23,11 +23,10 @@ function tau = find_tau_from_corr_threshold(x, m, corr_type, threshold)
         tau = 1; % fallback
     end
     
-    % --- cap tau so embed won't break ---
-    tau_cap = floor(N/(m-1)) - 1;
-    if tau > tau_cap
-        warning('Tau=%d too large, capping to %d', tau, tau_cap);
-        tau = max(1,tau_cap);
+    % Cap tau at the max_lag if necessary
+    if tau > max_lag
+        warning('Tau=%d too large, capping to %d', tau, max_lag);
+        tau = max(1,max_lag);
     else
         fprintf('Using Tau=%d\n', tau);
     end
